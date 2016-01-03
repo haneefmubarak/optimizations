@@ -31,7 +31,7 @@ pa2s:	# sandy optimized
 	prefetcht0	[rdi]
 
 	# processed in blocks of 8 structures
-#	shl	rdx, 3
+	shl	rdx, 3
 
 	# zero check
 	cmp	rdx, rax
