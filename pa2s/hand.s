@@ -28,7 +28,7 @@ pa2s:	# sandy optimized
 
 	# free rename | prefetch vector write
 	xor	eax, eax
-	prefetcht1	[rdi]
+	prefetcht0	[rdi]
 
 	# processed in blocks of 8 structures
 #	shl	rdx, 3
@@ -52,7 +52,7 @@ pa2s:	# sandy optimized
 	pmovzxbd	xmm2, DWORD PTR [rax + r10]
 	pmovzxbd	xmm3, DWORD PTR [rax + r11]
 	pslld		xmm2, 8
-	prefetcht1	[rdi + rax * 4 + 32]
+	prefetcht0	[rdi + rax * 4 + 32]
 
 	# load 2nd batch | merge 1st batch | shift 2nd batch
 	pmovzxbd	xmm4, DWORD PTR [rax + r8 + 4]
@@ -68,15 +68,15 @@ pa2s:	# sandy optimized
 	pslld	xmm5, 16
 	pslld	xmm6, 8
 	movdqu	XMMWORD PTR [rsi + rax * 4], xmm0
-	prefetcht1	[rax + r8 + 8]
+	prefetcht0	[rax + r8 + 8]
 
 	# merge 2nd batch | prefetch next pa.{r,g,b,a} cont.
 	por	xmm4, xmm5
 	por	xmm6, xmm7
-	prefetcht1	[rax + r9 + 8]
-	prefetcht1	[rax + r10 + 8]
+	prefetcht0	[rax + r9 + 8]
+	prefetcht0	[rax + r10 + 8]
 	por	xmm4, xmm6
-	prefetcht1	[rax + r11 + 8]
+	prefetcht0	[rax + r11 + 8]
 
 	# write 2nd batch | loop end
 	movdqu	XMMWORD PTR [rsi + rax * 4 + 16], xmm4

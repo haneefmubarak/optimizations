@@ -39,7 +39,7 @@ s2pa:	# sandy optimized
 	# free rename | free load s.r shift | prefetch vector read
 	xor	eax, eax
 	vmovdqa	xmm0, XMMWORD PTR [shift + rip]
-	prefetcht1	[rdi]
+	prefetcht0	[rdi]
 
 	# processed in blocks of 8 structures
 #	shl	rdx, 3
@@ -62,7 +62,7 @@ s2pa:	# sandy optimized
 .s2pa_LOOP:
 	# load in *s | prefetch next s
 	vmovdqu		xmm15, XMMWORD PTR [rdi + rax * 8]
-#	prefetcht1	[rax + rdi + 32]
+#	prefetcht0	[rax + rdi + 32]
 
 	# mask what we want | prefetch next pa.{r,g,b,a} for write
 	vpand		xmm4, xmm15, xmm0
@@ -71,21 +71,21 @@ s2pa:	# sandy optimized
 #	vpand		xmm5, xmm1, XMMWORD PTR [rdi + rax * 8]
 #	prefetchwt1	[rcx + r8 + 4]
 #	prefetchwt1	[rcx + r9 + 4]
-	prefetcht1	[r8 + rax * 2 + 4]
-	prefetcht1	[r9 + rax * 2 + 4]
+	prefetcht0	[r8 + rax * 2 + 4]
+	prefetcht0	[r9 + rax * 2 + 4]
 
 	vpand		xmm6, xmm15, xmm2
 	vpand		xmm7, xmm15, xmm3
 #	vpand		xmm6, xmm2, XMMWORD PTR [rdi + rax * 8]
 #	vpand		xmm7, xmm3, XMMWORD PTR [rdi + rax * 8]
-	prefetcht1	[r10 + rax * 2 + 4]
-	prefetcht1	[r11 + rax * 2 + 4]
+	prefetcht0	[r10 + rax * 2 + 4]
+	prefetcht0	[r11 + rax * 2 + 4]
 
 	# shift r,g,b (a is already in place) | prefetch next s
 	vpsrld	xmm4, xmm4, 24
 	vpsrld	xmm5, xmm5, 16
 	vpsrld	xmm6, xmm6, 8
-	prefetcht1	[rdi + rax * 8  + 32]
+	prefetcht0	[rdi + rax * 8  + 32]
 
 	# reduce 32 to 16
 	vpackusdw	xmm4, xmm4, xmm4
