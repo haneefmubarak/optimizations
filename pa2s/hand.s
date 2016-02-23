@@ -37,11 +37,11 @@ pa2s:	# sandy optimized
 	cmp	rdx, rax
 	je	.pa2s_RET
 
-	# load in pa indexes
-	mov	r8, QWORD PTR [rdi]
-	mov	r9, QWORD PTR [rdi + 8]
-	mov	r10, QWORD PTR [rdi + 16]
-	mov	r11, QWORD PTR [rdi + 24]
+	# load in pa indexes (reversed because little endian)
+	mov	r11, QWORD PTR [rdi]
+	mov	r10, QWORD PTR [rdi + 8]
+	mov	r9, QWORD PTR [rdi + 16]
+	mov	r8, QWORD PTR [rdi + 24]
 
 .pa2s_LOOP:
 	# load and expand 8 to 32 | shift r,g,b (a is already in place) | prefetch next s write
@@ -49,6 +49,7 @@ pa2s:	# sandy optimized
 	pmovzxbd	xmm1, DWORD PTR [rax + r9]
 	pslld		xmm0, 24
 	pslld		xmm1, 16
+
 	pmovzxbd	xmm2, DWORD PTR [rax + r10]
 	pmovzxbd	xmm3, DWORD PTR [rax + r11]
 	pslld		xmm2, 8
@@ -59,6 +60,7 @@ pa2s:	# sandy optimized
 	pmovzxbd	xmm5, DWORD PTR [rax + r9 + 4]
 	por		xmm0, xmm1
 	por		xmm2, xmm3
+
 	pmovzxbd	xmm6, DWORD PTR [rax + r10 + 4]
 	pmovzxbd	xmm7, DWORD PTR [rax + r11 + 4]
 	por		xmm0, xmm2
@@ -75,6 +77,7 @@ pa2s:	# sandy optimized
 	por	xmm6, xmm7
 	prefetcht0	[rax + r9 + 8]
 	prefetcht0	[rax + r10 + 8]
+
 	por	xmm4, xmm6
 	prefetcht0	[rax + r11 + 8]
 
