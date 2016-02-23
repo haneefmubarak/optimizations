@@ -23,9 +23,6 @@
 # pa2s (rdi *, rsi *, rdx)
 pa2s:	# sandy optimized
 
-	# clear sse registers eliminate sse switch penalty
-	vzeroupper
-
 	# free rename | prefetch vector write
 	xor	eax, eax
 	prefetcht0	[rdi]
